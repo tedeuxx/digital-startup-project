@@ -61,6 +61,7 @@ jobs:
 
       - name: Terraform plan
         id: plan
+        if: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'apply') || github.event_name == 'push' }}
         working-directory: terraform
         run: |
           terraform plan -out=tfplan.out -detailed-exitcode -var-file=./env/main.tfvars || exit_code=$?
@@ -74,11 +75,13 @@ jobs:
           fi
         
       - name: Terraform apply
+        id: apply
         if: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'apply' && steps.plan.outputs.no_changes == 'false') || github.event_name == 'push' }}
         working-directory: terraform
         run: terraform apply -auto-approve tfplan.out
         
       - name: Terraform destroy
+        id: destroy
         if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'destroy' }}
         working-directory: terraform
         run: terraform destroy -auto-approve -var-file=./env/main.tfvars
