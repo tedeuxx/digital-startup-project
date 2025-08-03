@@ -82,7 +82,7 @@ jobs:
 
       - name: Terraform apply
         id: apply
-        if: ${{ github.event.inputs.action == 'apply' && steps.plan.outputs.no_changes == 'false'}}
+        if: ${{ github.event.inputs.action != 'destroy' && steps.plan.outputs.no_changes == 'false'}}
         working-directory: terraform
         run: terraform apply -auto-approve tfplan.out
         
