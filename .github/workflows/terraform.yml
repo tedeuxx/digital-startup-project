@@ -34,6 +34,8 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       TERRAFORM_CLOUD_TOKEN: ${{ secrets.TERRAFORM_CLOUD_TOKEN }}
       TF_IN_AUTOMATION: true
+      TF_CLOUD_ORGANIZATION: tadeumendonca-io
+      TF_WORKSPACE: aws-landing-zone-main
 
     steps:
       - name: Checkout code
