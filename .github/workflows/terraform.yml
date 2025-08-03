@@ -63,11 +63,14 @@ jobs:
         id: plan
         working-directory: terraform
         run: |
-          terraform plan -out=tfplan.out > plan.log
-          if grep -q "No changes. Your infrastructure matches the configuration." plan.log; then
+          terraform plan -out=tfplan.out -detailed-exitcode || exit_code=$?
+          if [ "${exit_code:-0}" -eq 0 ]; then
             echo "no_changes=true" >> "$GITHUB_OUTPUT"
-          else
+          elif [ "$exit_code" -eq 2 ]; then
             echo "no_changes=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Terraform plan failed"
+            exit 1
           fi
         
       - name: Terraform apply
