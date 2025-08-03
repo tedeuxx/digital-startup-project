@@ -63,7 +63,7 @@ jobs:
         id: plan
         working-directory: terraform
         run: |
-          terraform plan -out=tfplan.out -detailed-exitcode || exit_code=$?
+          terraform plan -out=tfplan.out -detailed-exitcode -var-file=./env/main.tfvars || exit_code=$?
           if [ "${exit_code:-0}" -eq 0 ]; then
             echo "no_changes=true" >> "$GITHUB_OUTPUT"
           elif [ "$exit_code" -eq 2 ]; then
@@ -76,7 +76,7 @@ jobs:
       - name: Terraform apply
         if: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'apply' && steps.plan.outputs.no_changes == 'false') || github.event_name == 'push' }}
         working-directory: terraform
-        run: terraform apply -auto-approve tfplan.out
+        run: terraform apply -auto-approve -var-file=./env/main.tfvars tfplan.out
         
       - name: Terraform destroy
         if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'destroy' }}
