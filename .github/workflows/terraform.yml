@@ -47,7 +47,6 @@ jobs:
         id: fmt
         working-directory: terraform
         run: terraform fmt -check -recursive
-        continue-on-error: true
 
       - name: Terraform int
         id: init
