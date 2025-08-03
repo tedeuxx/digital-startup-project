@@ -80,7 +80,9 @@ jobs:
             echo "🔧 Infra will change"
             echo "no_changes=false" >> "$GITHUB_OUTPUT"
           fi
-        
+      - name: Debug no_changes output
+        run: echo "no_changes = ${{ steps.plan.outputs.no_changes }}"
+
       - name: Terraform apply
         id: apply
         if: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'apply' && steps.plan.outputs.no_changes == 'false') || github.event_name == 'push' }}
