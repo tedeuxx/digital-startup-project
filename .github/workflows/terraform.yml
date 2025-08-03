@@ -1,0 +1,75 @@
+name: tadeumendonca.io
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Terraform action to perform'
+        required: true
+        default: 'apply'
+        type: choice
+        options:
+          - apply
+          - destroy
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/**'
+      - 'terraform/**'
+      - 'src/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/**'
+      - 'terraform/**'
+      - 'src/**'
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_TOKEN_APP_TERRAFORM_IO }}
+      
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check
+        continue-on-error: true
+        working-directory: terraform
+
+      - name: Terraform int
+        id: init
+        run: terraform init
+        working-directory: terraform
+
+      - name: Terraform validate
+        id: validate
+        run: terraform validate
+        working-directory: terraform
+
+      - name: Terraform plan
+        id: plan
+        run: terraform plan -var-file=./env/main.tfvars
+        working-directory: terraform
+        
+
+      - name: Terraform apply
+        if: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'apply') || github.event_name == 'push' }}
+        run: terraform apply -auto-approve -var-file=./env/main.tfvars
+        working-directory: terraform
+
+      - name: Terraform destroy
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'destroy' }}
+        run: terraform destroy -auto-approve -var-file=./env/main.tfvars
+        working-directory: terraform
