@@ -6,9 +6,10 @@ terraform {
   }
   cloud {
     hostname     = "app.terraform.io"
-    organization = "tadeumendonca"
+    organization = "tadeumendonca-io"
+    project      = "landing-zone"
     workspaces {
-      name = "tadeumendonca-io"
+      name = "landing-zone-main"
     }
   }
 }
