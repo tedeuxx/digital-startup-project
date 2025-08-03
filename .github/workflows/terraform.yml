@@ -32,7 +32,7 @@ jobs:
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      TERRAFORM_CLOUD_TOKEN: ${{ secrets.TF_TOKEN_APP_TERRAFORM_IO }}
+      TERRAFORM_CLOUD_TOKEN: ${{ secrets.TERRAFORM_CLOUD_TOKEN }}
       TF_IN_AUTOMATION: true
 
     steps:
@@ -49,7 +49,7 @@ jobs:
         working-directory: terraform
         run: |
           mkdir -p ~/.terraform.d
-          echo '{"credentials":{"app.terraform.io":{"token":"${{ secrets.TF_TOKEN_APP_TERRAFORM_IO }}"}}}' > ~/.terraform.d/credentials.tfrc.json
+          echo '{"credentials":{"app.terraform.io":{"token":"${{ secrets.TERRAFORM_CLOUD_TOKEN }}"}}}' > ~/.terraform.d/credentials.tfrc.json
 
       - name: Terraform fmt
         id: fmt
