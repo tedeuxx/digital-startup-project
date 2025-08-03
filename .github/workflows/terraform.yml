@@ -64,19 +64,15 @@ jobs:
         if: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'apply') || github.event_name == 'push' }}
         working-directory: terraform
         run: |
-          set +e
-          terraform plan -out=tfplan.out -detailed-exitcode -var-file=./env/main.tfvars
-          exit_code=$?
           set -e
-          
-          echo "Terraform plan exit code: $exit_code"
-          if [ "$exit_code" -eq 0 ]; then
+          terraform plan -out=tfplan.out -var-file=./env/main.tfvars | tee plan_output.log
+
+          if grep -q "No changes. Your infrastructure matches the configuration." plan_output.log; then
+            echo "✅ Infra up-to-date: no changes"
             echo "no_changes=true" >> "$GITHUB_OUTPUT"
-          elif [ "$exit_code" -eq 2 ]; then
-            echo "no_changes=false" >> "$GITHUB_OUTPUT"
           else
-            echo "Terraform plan failed with exit code $exit_code"
-            exit 1
+            echo "🔧 Infra will change"
+            echo "no_changes=false" >> "$GITHUB_OUTPUT"
           fi
         
       - name: Terraform apply
