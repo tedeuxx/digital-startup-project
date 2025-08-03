@@ -80,9 +80,6 @@ jobs:
             echo "no_changes=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Debug output no_changes
-        run: echo "DEBUG: no_changes = '${{ steps.plan.outputs.no_changes }}'"
-
       - name: Terraform apply
         id: apply
         if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.action != 'destroy' && steps.plan.outputs.no_changes == 'false'}}
