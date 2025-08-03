@@ -68,7 +68,8 @@ jobs:
           terraform plan -out=tfplan.out -detailed-exitcode -var-file=./env/main.tfvars
           exit_code=$?
           set -e
-
+          
+          echo "Terraform plan exit code: $exit_code"
           if [ "$exit_code" -eq 0 ]; then
             echo "no_changes=true" >> "$GITHUB_OUTPUT"
           elif [ "$exit_code" -eq 2 ]; then
