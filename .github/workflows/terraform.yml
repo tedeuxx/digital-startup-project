@@ -1,4 +1,4 @@
-name: tadeumendonca.io
+name: tadeumendonca-io-aws-landing-zone
 on:
   workflow_dispatch:
     inputs:
