@@ -44,6 +44,13 @@ jobs:
         with:
           terraform_version: 1.8.3
       
+      - name: Configure Terraform credentials
+        id: credentials
+        working-directory: terraform
+        run: |
+          mkdir -p ~/.terraform.d
+          echo '{"credentials":{"app.terraform.io":{"token":"${{ secrets.TF_TOKEN_APP_TERRAFORM_IO }}"}}}' > ~/.terraform.d/credentials.tfrc.json
+
       - name: Terraform fmt
         id: fmt
         working-directory: terraform
