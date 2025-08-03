@@ -21,5 +21,5 @@ output "aws_availability_zones" {
 ############################
 output "customer_workload_name" {
   description = "Workload Name"
-  value = local.customer_workload_name
+  value       = local.customer_workload_name
 }
